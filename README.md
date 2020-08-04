@@ -1,1 +1,4 @@
-# Symfony_5-user-crud
+# Symfony 5 - user CRUD
+
+Symfony 5 - user CRUD ! 
+With Web panel and API

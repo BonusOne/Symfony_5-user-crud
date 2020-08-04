@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registration!{% endblock %}
+
+{% block body %}
+<form method="post">
+
+    <h1 class="h3 mb-3 font-weight-normal">Edit user {{ user.username }}</h1>
+    <label for="inputUsername">Username</label>
+    <input type="text" value="{{ user.username }}" name="username" id="inputUsername" class="form-control" required autofocus>
+<br /><br />
+    <label for="inputFirstname">First Name</label>
+    <input type="text" value="{{ user.firstname }}" name="firstname" id="inputFirstname" class="form-control" required>
+<br /><br />
+    <label for="inputLastname">Last Name</label>
+    <input type="text" value="{{ user.lastname }}" name="lastname" id="inputLastname" class="form-control" required>
+<br /><br />
+    <label for="inputType">User type</label>
+    <select name="usertype" id="inputType" class="form-control" required>
+        <option value="2" {% if user.type == 2 %}selected{% endif %}>User</option>
+        <option value="1" {% if user.type == 1 %}selected{% endif %}>Admin</option>
+    </select>
+<br /><br />
+    <label for="inputPosition">Position</label>
+    <input type="text" value="{{ user.position }}" name="position" id="inputPosition" class="form-control" required>
+<br /><br />
+    <label for="inputAvatar">Avatar</label>
+    <input type="text" value="{{ user.avatar }}" name="avatar" id="inputAvatar" class="form-control">
+<br /><br />
+    <button class="btn btn-lg btn-primary" type="submit">
+        Edit
+    </button>
+</form>
+{% endblock %}

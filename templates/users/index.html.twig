@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registration!{% endblock %}
+
+{% block body %}
+
+    <h1 class="h3 mb-3 font-weight-normal">Users</h1>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Avatar</th>
+            <th>Username</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th>Created at</th>
+            <th>User Type</th>
+            <th>Position</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.avatar }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.created_at|date("d-m-Y H:i:s") }}</td>
+            <td>
+                {% if user.type == 2 %}
+                    User
+                {% elseif user.type == 1 %}
+                    Admin
+                {% elseif user.type == 0 %}
+                    Super Admin
+                {% else %}
+                    Something other :O
+                {% endif %}
+            </td>
+            <td>{{ user.position }}</td>
+            <td>
+                {% if user.status == 1 %}
+                    Active
+                {% elseif user.status == 0 %}
+                    Disable
+                {% else %}
+                    Something other :O
+                {% endif %}
+            </td>
+            <td><a href="/dashboard/users/{{ user.id }}">Show</a>  <a href="/dashboard/users/{{ user.id }}/edit">Edit</a>
+            {% if user.status == 1 %}
+                    <a href="/dashboard/users/{{ user.id }}/disable">Disable</a>
+            {% elseif user.status == 0 %}
+                <a href="/dashboard/users/{{ user.id }}/enable">Enable</a>
+            {% endif %}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% endblock %}

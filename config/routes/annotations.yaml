@@ -1,0 +1,28 @@
+web_controllers:
+    resource: ../../src/Controller/Web/
+    type: annotation
+    prefix: /dashboard
+    name_prefix: app_
+
+
+security_controller:
+    resource: ../../src/Controller/SecurityController.php
+    type: annotation
+    prefix: /
+    name_prefix:
+
+password_controller:
+    resource: ../../src/Controller/ResetPasswordController.php
+    type: annotation
+    prefix: /
+    name_prefix:
+
+rest_controller:
+    resource: ../../src/Controller/Rest/
+    type: annotation
+    prefix: /api
+    name_prefix: api_
+
+kernel:
+    resource: ../../src/Kernel.php
+    type: annotation

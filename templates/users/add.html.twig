@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registration!{% endblock %}
+
+{% block body %}
+<form method="post">
+    {% if data is defined %}
+        <div class="alert alert-danger">{{ data }}</div>
+    {% endif %}
+
+    <h1 class="h3 mb-3 font-weight-normal">Add new user</h1>
+    <label for="inputUsername">Username</label>
+    <input type="text" name="username" id="inputUsername" class="form-control" required autofocus>
+<br /><br />
+    <label for="inputEmail">Email</label>
+    <input type="text" name="email" id="inputEmail" class="form-control" required>
+<br /><br />
+    <label for="inputFirstname">First Name</label>
+    <input type="text" name="firstname" id="inputFirstname" class="form-control" required>
+<br /><br />
+    <label for="inputLastname">Last Name</label>
+    <input type="text" name="lastname" id="inputLastname" class="form-control" required>
+<br /><br />
+    <label for="inputType">User type</label>
+    <select name="usertype" id="inputType" class="form-control" required>
+        <option value="2">User</option>
+        <option value="1">Admin</option>
+    </select>
+<br /><br />
+    <label for="inputPosition">Position</label>
+    <input type="text" name="position" id="inputPosition" class="form-control" required>
+<br /><br />
+    <label for="inputAvatar">Avatar</label>
+    <input type="text" name="avatar" id="inputAvatar" class="form-control">
+<br /><br />
+    <button class="btn btn-lg btn-primary" type="submit">
+        Register
+    </button>
+</form>
+{% endblock %}

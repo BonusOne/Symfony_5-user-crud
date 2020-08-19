@@ -16,14 +16,14 @@ PHP >= 7.4.6
 vHost
 ```
 <VirtualHost *:80>
-   	DocumentRoot ".../slideshow2.0-be/public"
-   	ServerName slideshow2.loc
-   	ServerAlias www.slideshow2.loc
-   	ServerAdmin webmaster@slideshow2.loc
-   	ErrorLog "logs/slideshow2.loc-error.log"
-   	CustomLog "logs/slideshow2.loc-access.log" common
+   	DocumentRoot ".../symfony5-crud/public"
+   	ServerName symfony5-crud.loc
+   	ServerAlias www.symfony5-crud.loc
+   	ServerAdmin webmaster@symfony5-crud.loc
+   	ErrorLog "logs/symfony5-crud.loc-error.log"
+   	CustomLog "logs/symfony5-crud.loc-access.log" common
    	SetEnv APPLICATION_ENV development
-   	<Directory ".../slideshow2.0-be/public">
+   	<Directory ".../symfony5-crud/public">
    		Order allow,deny
    		Allow from all
    	</Directory>

@@ -39,7 +39,13 @@ class indexController extends AbstractController
         /** @var Users $user */
         $user = $this->getUser();
 
+        $dashboardData = [
+            'assignee' => [], //account
+            'publisher' => [], //graphic
+            'admin' => []
+        ];
 
-        return $this->render('base.html.twig',['user' => $user]);
+
+        return $this->render('base.html.twig',['data' => $dashboardData, 'user' => $user]);
     }
 }

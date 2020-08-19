@@ -1,8 +1,8 @@
 {
-    "name": "BonusOne/Symfony_5-user-crud",
+    "name": "sataku/slideshow-2",
     "type": "project",
     "license": "proprietary",
-    "description": "Symfony 5 - User CRUD",
+    "description": "Back-end for SliseShow 2.0 Sataku",
     "minimum-stability": "dev",
     "require": {
         "php": "^7.2.5",
@@ -14,6 +14,7 @@
         "doctrine/doctrine-bundle": "2.2.x-dev",
         "doctrine/doctrine-migrations-bundle": "3.1.x-dev",
         "doctrine/orm": "2.7.x-dev",
+        "nelmio/cors-bundle": "^2.0@dev",
         "phpdocumentor/reflection-docblock": "5.x-dev",
         "sensio/framework-extra-bundle": "^5.5@dev",
         "symfony/asset": "5.2.*",
@@ -52,7 +53,6 @@
         "symfony/debug-bundle": "5.2.x-dev",
         "symfony/maker-bundle": "^1.0",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/phpunit-bridge": "5.2.x-dev",
         "symfony/stopwatch": "5.2.x-dev",
         "symfony/twig-bundle": "5.2.x-dev",
         "symfony/var-dumper": "5.2.x-dev",

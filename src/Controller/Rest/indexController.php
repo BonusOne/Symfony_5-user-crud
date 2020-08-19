@@ -10,9 +10,11 @@ namespace App\Controller\Rest;
 
 use App\Entity\Users;
 use App\Repository\LoginLogRepository;
+use App\Repository\TokensRepository;
 use App\Repository\UsersRepository;
 use App\Service\UsersService;
 use App\Service\SecurityService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,23 +28,37 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class indexController extends AbstractController
 {
-    /** @var LoginLogRepository */
     private $loginLogRepository;
-
-    /** @var UsersRepository */
     private $usersRepository;
-
-    private $content;
-    private $userId;
+    private $tokensRepository;
+    private $user;
+    private $em;
 
     /**
      * indexController constructor.
      * @param LoginLogRepository $loginLogRepository
+     * @param UsersRepository $usersRepository
+     * @param EntityManagerInterface $entityManager
+     * @param TokensRepository $tokensRepository
      */
-    public function __construct(LoginLogRepository $loginLogRepository, UsersRepository $usersRepository)
+    public function __construct(LoginLogRepository $loginLogRepository, UsersRepository $usersRepository, EntityManagerInterface $entityManager, TokensRepository $tokensRepository)
     {
         $this->loginLogRepository = $loginLogRepository;
         $this->usersRepository = $usersRepository;
+        $this->em = $entityManager;
+        $this->tokensRepository = $tokensRepository;
+    }
+
+    private function checkToken(Request $request){
+        $content = $request->request->all();
+        $securityService = new SecurityService($this->loginLogRepository,$this->em);
+        if(!$securityService->checkValidDataToken($request)){
+            return false;
+        } else {
+            $loginLog = $this->tokensRepository->findByToken($content['token'])[0];
+            $this->user = $this->usersRepository->find($loginLog['user_id']);
+            return true;
+        }
     }
 
     /**
@@ -52,18 +68,18 @@ class indexController extends AbstractController
      */
     public function index(Request $request)
     {
-        $this->content = $request->request->all();
-        if(!(new SecurityService)->checkValidDataToken($this->content)){
+        if($this->checkToken($request)) {
+
+            $dashboardData = [
+                'assignee' => [], //account
+                'publisher' => [], //graphic
+                'admin' => []
+            ];
+
+
+            return new JsonResponse(['Success' => true, 'data' => $dashboardData]);
+        } else {
             return new JsonResponse(['Success' => false, 'data' => 'Token expired']);
         }
-        $loginLog = $this->loginLogRepository->findByToken($this->content['token']);
-        $users = $this->usersRepository->find($loginLog['id_user']);
-        file_put_contents('API__users_dash.txt', var_export($users, true));
-
-        /** @var Users $user */
-        $user = $this->getUser();
-
-
-        return new JsonResponse(['Success' => true, 'user' => $user]);
     }
 }

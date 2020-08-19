@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registration!{% endblock %}
+{% block title %}User Edit!{% endblock %}
 
 {% block body %}
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 
     <h1 class="h3 mb-3 font-weight-normal">Edit user {{ user.username }}</h1>
     <label for="inputUsername">Username</label>
@@ -17,7 +17,8 @@
 <br /><br />
     <label for="inputType">User type</label>
     <select name="usertype" id="inputType" class="form-control" required>
-        <option value="2" {% if user.type == 2 %}selected{% endif %}>User</option>
+        <option value="3" {% if user.type == 3 %}selected{% endif %}>Account</option>
+        <option value="2" {% if user.type == 2 %}selected{% endif %}>Graphic</option>
         <option value="1" {% if user.type == 1 %}selected{% endif %}>Admin</option>
     </select>
 <br /><br />
@@ -25,7 +26,7 @@
     <input type="text" value="{{ user.position }}" name="position" id="inputPosition" class="form-control" required>
 <br /><br />
     <label for="inputAvatar">Avatar</label>
-    <input type="text" value="{{ user.avatar }}" name="avatar" id="inputAvatar" class="form-control">
+    <input type="file" name="avatar" id="inputAvatar" class="form-control">
 <br /><br />
     <button class="btn btn-lg btn-primary" type="submit">
         Edit

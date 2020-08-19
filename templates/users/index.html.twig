@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registration!{% endblock %}
+{% block title %}User Index!{% endblock %}
 
 {% block body %}
 
@@ -23,15 +23,17 @@
     {% for user in users %}
         <tr>
             <td>{{ user.id }}</td>
-            <td>{{ user.avatar }}</td>
+            <td>{% if user.avatar is defined %}<img src="{{ asset(user.avatar) }}" style="max-width: 150px" />{% endif %}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.first_name }}</td>
             <td>{{ user.last_name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.created_at|date("d-m-Y H:i:s") }}</td>
             <td>
-                {% if user.type == 2 %}
-                    User
+                {% if user.type == 3 %}
+                    Account
+                {% elseif user.type == 2 %}
+                    Graphic
                 {% elseif user.type == 1 %}
                     Admin
                 {% elseif user.type == 0 %}
@@ -50,12 +52,14 @@
                     Something other :O
                 {% endif %}
             </td>
-            <td><a href="/dashboard/users/{{ user.id }}">Show</a>  <a href="/dashboard/users/{{ user.id }}/edit">Edit</a>
-            {% if user.status == 1 %}
-                    <a href="/dashboard/users/{{ user.id }}/disable">Disable</a>
-            {% elseif user.status == 0 %}
-                <a href="/dashboard/users/{{ user.id }}/enable">Enable</a>
-            {% endif %}</td>
+            <td><a href="/dashboard/users/{{ user.id }}">Show</a>  {% if user.type == 0 %}{% else %}<a href="/dashboard/users/{{ user.id }}/edit">Edit</a>
+                    {% if user.status == 1 %}
+                        <a href="/dashboard/users/{{ user.id }}/disable">Disable</a>
+                    {% elseif user.status == 0 %}
+                        <a href="/dashboard/users/{{ user.id }}/enable">Enable</a>
+                    {% endif %}
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
     </table>

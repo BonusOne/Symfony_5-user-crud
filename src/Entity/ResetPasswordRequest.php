@@ -1,10 +1,4 @@
 <?php
-/**
- * Symfony 5 - User CRUD
- *
- * @author Paweł Liwocha PAWELDESIGN <pawel.liwocha@gmail.com>
- * @copyright Copyright (c) 2020  Paweł Liwocha PAWELDESIGN (https://paweldesign.com)
- */
 
 namespace App\Entity;
 

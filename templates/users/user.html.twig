@@ -22,13 +22,14 @@
     <input type="text" value="{{ user.lastname }}" name="lastname" id="inputLastname" class="form-control" disabled>
 <br /><br />
     <label for="inputType">User type</label>
-    <input type="text" value="{% if user.type == 2 %}User{% elseif user.type == 1 %}Admin{% elseif user.type == 0 %}Super Admin{% else %}Something other :O{% endif %}" name="usertype" id="inputType" class="form-control" disabled>
+    <input type="text" value="{% if user.type == 3 %}Account{% elseif user.type == 2 %}Graphic{% elseif user.type == 1 %}Admin{% elseif user.type == 0 %}Super Admin{% else %}Something other :O{% endif %}" name="usertype" id="inputType" class="form-control" disabled>
 <br /><br />
     <label for="inputPosition">Position</label>
     <input type="text" value="{{ user.position }}" name="position" id="inputPosition" class="form-control" disabled>
 <br /><br />
     <label for="inputAvatar">Avatar</label>
     <input type="text" value="{{ user.avatar }}" name="avatar" id="inputAvatar" class="form-control" disabled>
+    {% if user.avatar is defined %}<img src="{{ asset(user.avatar) }}" style="max-width: 150px" />{% endif %}
 <br /><br />
     <label for="inputStatus">Status</label>
     <input type="text" value="{% if user.status == 1 %}Active{% elseif user.status == 0 %}Disable{% else %}Something other :O{% endif %}" name="status" id="inputStatus" class="form-control" disabled>

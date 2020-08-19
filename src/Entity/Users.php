@@ -1,10 +1,4 @@
 <?php
-/**
- * Symfony 5 - User CRUD
- *
- * @author Paweł Liwocha PAWELDESIGN <pawel.liwocha@gmail.com>
- * @copyright Copyright (c) 2020  Paweł Liwocha PAWELDESIGN (https://paweldesign.com)
- */
 
 namespace App\Entity;
 
@@ -87,6 +81,11 @@ class Users implements UserInterface
      * @ORM\Column(type="string", length=400, nullable=true)
      */
     private $avatar;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true, options={"default":NULL})
+     */
+    private $last_login;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -243,6 +242,18 @@ class Users implements UserInterface
     public function setAvatar(?string $avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->last_login;
+    }
+
+    public function setLastLogin(\DateTimeInterface $last_login): self
+    {
+        $this->last_login = $last_login;
 
         return $this;
     }

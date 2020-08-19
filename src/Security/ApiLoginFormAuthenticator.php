@@ -6,6 +6,7 @@ use App\Entity\LoginLog;
 use App\Entity\Tokens;
 use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -22,12 +23,12 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
+class ApiLoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'app_login';
-    public const LOGOUT_ROUTE = 'app_logout';
+    public const LOGIN_ROUTE = 'api_login';
+    public const LOGOUT_ROUTE = 'api_logout';
 
     private $entityManager;
     private $urlGenerator;
@@ -55,7 +56,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $credentials = [
             'username' => trim($request->request->get('username')),
             'password' => trim($request->request->get('password')),
-            'csrf_token' => $request->request->get('_csrf_token'),
+            //'csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
@@ -65,28 +66,31 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $credentials;
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider = null)
     {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
+        /*$token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
-            throw new InvalidCsrfTokenException();
-        }
+            //throw new InvalidCsrfTokenException();
+            return ['error' => 'InvalidCsrfTokenException'];
+        }*/
 
         $user = $this->entityManager->getRepository(Users::class)->findOneBy(['username' => $credentials['username']]);
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Username could not be found.');
+            //throw new CustomUserMessageAuthenticationException('Username could not be found.');
+            return ['error' => 'Username could not be found'];
         }
         if ($user->getStatus() != 1) {
             // account is deleted
-            throw new CustomUserMessageAuthenticationException('Account not exist.');
+            //throw new CustomUserMessageAuthenticationException('Account not exist.');
+            return ['error' => 'Account not exist'];
         }
         // TODO: add checking and created token
         $token = $this->generateToken($user->getUsername());
         $this->session->set('userid', $user->getId());
         $this->session->set('usertype', $user->getType());
-        $this->session->set('csrf_token', $credentials['csrf_token']);
+        //$this->session->set('csrf_token', $credentials['csrf_token']);
         $this->session->set('token', $token);
         return $user;
     }
@@ -96,7 +100,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token = null, $providerKey = null)
     {
         $dateNow = new \DateTime('now');
         $dateExpied = new \DateTime('now');
@@ -134,11 +138,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-            return new RedirectResponse($targetPath);
-        }
+        /*if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return ['Success' => true, 'targetPath' => $targetPath];
+        }*/
 
-        return new RedirectResponse($this->urlGenerator->generate('app_index'));
+        return ['Success' => true, 'targetPath' => $this->urlGenerator->generate('api_dashboard')];
     }
 
     protected function getLoginUrl()

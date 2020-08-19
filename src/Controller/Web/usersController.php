@@ -10,6 +10,7 @@ namespace App\Controller\Web;
 
 use App\Entity\Users;
 use App\Repository\UsersRepository;
+use App\Service\FileUploader;
 use App\Service\UsersService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,17 +34,20 @@ class usersController extends AbstractController
 
     private $passwordEncoder;
     private $em;
+    private $protocol;
 
     /**
      * indexController constructor.
      * @param UsersRepository $UsersRepository
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(UsersRepository $UsersRepository, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
         $this->UsersRepository = $UsersRepository;
         $this->passwordEncoder = $passwordEncoder;
         $this->em = $entityManager;
+        $this->protocol = $_SERVER['PROTOCOL'] = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http';
     }
 
     /**
@@ -63,10 +67,11 @@ class usersController extends AbstractController
      * @Route("/add", name="add")
      * @param Request $request
      * @param \Swift_Mailer $mailer
+     * @param FileUploader $fileUploader
      * @return Response
      * @throws \Exception
      */
-    public function add(Request $request, \Swift_Mailer $mailer)
+    public function add(Request $request, \Swift_Mailer $mailer, FileUploader $fileUploader)
     {
         /** @var Users $user */
         $user = $this->getUser();
@@ -76,7 +81,7 @@ class usersController extends AbstractController
 
             $usertype = $request->request->get('usertype');
 
-            if ($usertype == 2){
+            if($usertype == 2){
                 $role = 'ROLE_USER';
             } else if ($usertype == 1){
                 $role = 'ROLE_ADMIN';
@@ -84,9 +89,16 @@ class usersController extends AbstractController
                 $role = 'ROLE_USER';
             }
 
+            if ($request->request->get('avatar')->getData()) {
+                $avatarFile = $request->files->get('avatar');
+                $avatarFileName = $fileUploader->upload($avatarFile,$this->getParameter('avatar_directory'));
+            } else {
+                $avatarFileName = 'noset.png';
+            }
+
             $password = $this->generatePassword(12);
             $users = new Users();
-            $users->setUsername($request->request->get('username'));
+            $users->setUsername(trim($request->request->get('username')));
             $users->setPassword($this->passwordEncoder->encodePassword($users,$password));
             $users->setEmail($request->request->get('email'));
             $users->setEmailHash(hash('sha256', $request->request->get('email')));
@@ -97,16 +109,16 @@ class usersController extends AbstractController
             $users->setPosition($request->request->get('position'));
             $users->setIdAuthor($user->getId());
             $users->setStatus(1);
-            $users->setAvatar($request->request->get('avatar'));
+            $users->setAvatar($this->protocol.'://'.$_SERVER['HTTP_HOST'].'/'.$this->getParameter('avatar_directory_public').$avatarFileName);
             $users->setRoles(json_encode([$role]));
-            $users->setSalt(hash('sha256', 'SaltSalt@'));
+            $users->setSalt(hash('sha256', 'Sarigato'));
 
             $this->em->persist($users);
             $this->em->flush();
 
             try{
-            $message = (new \Swift_Message('Hello in Symfony5 crud!'))
-                ->setFrom('no-reply@pawelliwocha.com')
+            $message = (new \Swift_Message('Hello in Sataku SlideShow!'))
+                ->setFrom('no-reply@sataku.com')
                 ->setTo($request->request->get('email'))
                 ->setBody(
                     $this->renderView(
@@ -132,7 +144,7 @@ class usersController extends AbstractController
                 $errors = $e;
             }
         }
-        return $this->render('users/add.html.twig',['data' => $errors]);
+        return $this->render('users/add.html.twig',['errors' => $errors]);
     }
 
     /**
@@ -192,39 +204,52 @@ class usersController extends AbstractController
      * @Route("/{id_user}/edit", name="edit")
      * @param Request $request
      * @param int $id_user
+     * @param FileUploader $fileUploader
      * @return Response
-     * @throws \Exception
      */
-    public function edit(Request $request, int $id_user)
+    public function edit(Request $request, int $id_user, FileUploader $fileUploader)
     {
         $user = $this->em->getRepository(Users::class)->findOneBy(['id' => $id_user]);
-
+        $errors = array();
         if ($request->isMethod('post')) {
 
             $usertype = $request->request->get('usertype');
 
-            if ($usertype == 2){
-                $role = 'ROLE_USER';
+            if($usertype == 3){
+                $role = 'ROLE_ACCOUNT';
+            } else if ($usertype == 2){
+                $role = 'ROLE_GRAPHIC';
             } else if ($usertype == 1){
                 $role = 'ROLE_ADMIN';
             } else {
                 $role = 'ROLE_USER';
             }
 
-            $users = new Users();
-            $users->setUsername($request->request->get('username'));
-            $users->setFirstName($request->request->get('firstname'));
-            $users->setLastName($request->request->get('lastname'));
-            $users->setType($usertype);
-            $users->setPosition($request->request->get('position'));
-            $users->setAvatar($request->request->get('avatar'));
-            $users->setRoles(json_encode([$role]));
+            $user->setUsername(trim($request->request->get('username')));
+            $user->setFirstName($request->request->get('firstname'));
+            $user->setLastName($request->request->get('lastname'));
+            $user->setType($usertype);
+            $user->setPosition($request->request->get('position'));
+            $user->setRoles(json_encode([$role]));
 
-            $this->em->persist($users);
-            $this->em->flush();
 
+            if($request->request->get('avatar') == 'clear') {
+                $avatarFileName = 'noset.png';
+                $user->setAvatar($avatarFileName);
+            } elseif ($request->files->get('avatar')) {
+                $avatarFile = $request->files->get('avatar');
+                $avatarFileName = $fileUploader->upload($avatarFile,$this->getParameter('avatar_directory'));
+                $user->setAvatar($this->protocol.'://'.$_SERVER['HTTP_HOST'].'/'.$this->getParameter('avatar_directory_public').$avatarFileName);
+            }
+            try {
+                $this->em->persist($user);
+                $this->em->flush();
+                return $this->redirectToRoute('app_users_index');
+            }catch (\Exception $e){
+                $errors = $e;
+            }
         }
-        return $this->render('users/edit.html.twig',['user' => $user]);
+        return $this->render('users/edit.html.twig',['user' => $user, 'errors' => $errors]);
     }
 
     /**
@@ -242,8 +267,8 @@ class usersController extends AbstractController
         try{
             $this->em->persist($user);
             $this->em->flush();
-            $message = (new \Swift_Message('New password Symfony 5 crud!'))
-                ->setFrom('no-reply@pawelliwocha.com')
+            $message = (new \Swift_Message('New password Sataku SlideShow!'))
+                ->setFrom('no-reply@sataku.com')
                 ->setTo($user->getEmail())
                 ->setBody(
                     $this->renderView(

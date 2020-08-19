@@ -8,42 +8,62 @@
 
 namespace App\Service;
 
+use App\Entity\Tokens;
 use App\Repository\LoginLogRepository;
 use DateInterval;
 use DateTime;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
-class SecurityService
+/**
+ * Class SecurityService
+ * @package App\Service
+ */
+class SecurityService extends AbstractController
 {
-    /** @var LoggerInterface $logger */
+    /** @var LoggerInterface */
     private $logger;
 
     /** @var LoginLogRepository */
     private $loginLogRepository;
 
-    private $dbcon;
+    private $em;
 
-    public function __construct(LoggerInterface $logger, LoginLogRepository $loginLogRepository)
+    /**
+     * SecurityService constructor.
+     * @param LoginLogRepository $loginLogRepository
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(LoginLogRepository $loginLogRepository,EntityManagerInterface $entityManager)
     {
-        $this->logger = $logger;
+        //$this->logger = $logger;
         $this->loginLogRepository = $loginLogRepository;
-        //$this->dbcon = $this->getDoctrine()->getManager()->getConnection();
+        $this->em = $entityManager;
     }
 
-    public function checkValidDataToken($request): bool
+    public function checkValidDataToken(Request $request): bool
     {
         $content = $request->request->all();
-        $loginLog = $this->loginLogRepository->findByToken($content['token']);
-
-        $now = new DateTime();
-        $startDate = new DateTime($loginLog['created_at']);
-        $endDate = new DateTime();
-        $endDate->add(new DateInterval("PT1H"));
-
-        if($startDate <= $now && $now <= $endDate) {
-            return true;
-        } else {
+        if(!array_key_exists("token",$content)) {
             return false;
+        } else {
+            $tokens = $this->em->getRepository(Tokens::class)->findBy(['token' => $content['token']],['id' => 'DESC'])[0];
+            $now = new DateTime('now');
+            $startDate = new DateTime($tokens->getCreatedAt()->format('Y-m-d H:i:s'));
+            $endDate = new DateTime($tokens->getExpired()->format('Y-m-d H:i:s'));
+
+            if ($startDate <= $now && $now <= $endDate) {
+                $dateExpied = new \DateTime('now');
+                $dateExpied = $dateExpied->modify('+30 minutes');
+                $tokens->setExpired($dateExpied);
+                $this->em->persist($tokens);
+                $this->em->flush();
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

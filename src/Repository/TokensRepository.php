@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\LoginLog;
+use App\Entity\Tokens;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method LoginLog|null find($id, $lockMode = null, $lockVersion = null)
- * @method LoginLog|null findOneBy(array $criteria, array $orderBy = null)
- * @method LoginLog[]    findAll()
- * @method LoginLog[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Tokens|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Tokens|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Tokens[]    findAll()
+ * @method Tokens[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class LoginLogRepository extends ServiceEntityRepository
+class TokensRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, LoginLog::class);
+        parent::__construct($registry, Tokens::class);
     }
 
     public function findByToken($token)
@@ -31,15 +31,15 @@ class LoginLogRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return LoginLog[] Returns an array of LoginLog objects
+    //  * @return Tokens[] Returns an array of Tokens objects
     //  */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
+            ->orderBy('t.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
@@ -48,10 +48,10 @@ class LoginLogRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?LoginLog
+    public function findOneBySomeField($value): ?Tokens
     {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()

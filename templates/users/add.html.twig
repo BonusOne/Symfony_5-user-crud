@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registration!{% endblock %}
+{% block title %}User Add!{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if data is defined %}
-        <div class="alert alert-danger">{{ data }}</div>
+<form method="post" enctype="multipart/form-data">
+    {% if errors is defined %}
+        <div class="alert alert-danger">{{ errors }}</div>
     {% endif %}
 
     <h1 class="h3 mb-3 font-weight-normal">Add new user</h1>
@@ -23,7 +23,8 @@
 <br /><br />
     <label for="inputType">User type</label>
     <select name="usertype" id="inputType" class="form-control" required>
-        <option value="2">User</option>
+        <option value="3">Account</option>
+        <option value="2">Graphic</option>
         <option value="1">Admin</option>
     </select>
 <br /><br />
@@ -31,7 +32,7 @@
     <input type="text" name="position" id="inputPosition" class="form-control" required>
 <br /><br />
     <label for="inputAvatar">Avatar</label>
-    <input type="text" name="avatar" id="inputAvatar" class="form-control">
+    <input type="file" name="avatar" id="inputAvatar" class="form-control">
 <br /><br />
     <button class="btn btn-lg btn-primary" type="submit">
         Register

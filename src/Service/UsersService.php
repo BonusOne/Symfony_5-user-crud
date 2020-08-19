@@ -23,7 +23,8 @@ class UsersService
 
     const TYPE_SUPER_ADMIN = 0;
     const TYPE_ADMIN = 1;
-    const TYPE_USER = 2;
+    const TYPE_GRAPHIC = 2;
+    const TYPE_ACCOUNT = 3;
 
     public function __construct(LoggerInterface $logger, LoginLogRepository $loginLogRepository)
     {

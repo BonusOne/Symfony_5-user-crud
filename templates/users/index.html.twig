@@ -30,10 +30,8 @@
             <td>{{ user.email }}</td>
             <td>{{ user.created_at|date("d-m-Y H:i:s") }}</td>
             <td>
-                {% if user.type == 3 %}
-                    Account
-                {% elseif user.type == 2 %}
-                    Graphic
+                {% if user.type == 2 %}
+                    User
                 {% elseif user.type == 1 %}
                     Admin
                 {% elseif user.type == 0 %}

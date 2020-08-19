@@ -17,8 +17,7 @@
 <br /><br />
     <label for="inputType">User type</label>
     <select name="usertype" id="inputType" class="form-control" required>
-        <option value="3" {% if user.type == 3 %}selected{% endif %}>Account</option>
-        <option value="2" {% if user.type == 2 %}selected{% endif %}>Graphic</option>
+        <option value="2" {% if user.type == 2 %}selected{% endif %}>User</option>
         <option value="1" {% if user.type == 1 %}selected{% endif %}>Admin</option>
     </select>
 <br /><br />

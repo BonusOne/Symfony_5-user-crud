@@ -1,8 +1,8 @@
 {
-    "name": "sataku/slideshow-2",
+    "name": "bonusone/symfony-5-crud",
     "type": "project",
     "license": "proprietary",
-    "description": "Back-end for SliseShow 2.0 Sataku",
+    "description": "Symfony 5 - CRUD",
     "minimum-stability": "dev",
     "require": {
         "php": "^7.2.5",

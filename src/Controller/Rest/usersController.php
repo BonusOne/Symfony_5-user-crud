@@ -110,11 +110,11 @@ class usersController extends AbstractController
                     /*$content = $request->getContent();
                     $content = json_decode($content, true);*/
 
-                    if($content['usertype'] = 3){
+                    if($content['usertype'] == 3){
                         $role = 'ROLE_ACCOUNT';
-                    } else if ($content['usertype'] = 2){
+                    } else if ($content['usertype'] == 2){
                         $role = 'ROLE_GRAPHIC';
-                    } else if ($content['usertype'] = 1){
+                    } else if ($content['usertype'] == 1){
                         $role = 'ROLE_ADMIN';
                     } else {
                         $role = 'ROLE_USER';

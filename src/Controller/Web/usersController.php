@@ -111,14 +111,14 @@ class usersController extends AbstractController
             $users->setStatus(1);
             $users->setAvatar($this->protocol.'://'.$_SERVER['HTTP_HOST'].'/'.$this->getParameter('avatar_directory_public').$avatarFileName);
             $users->setRoles(json_encode([$role]));
-            $users->setSalt(hash('sha256', 'Sarigato'));
+            $users->setSalt(hash('sha256', 'Symfony5'));
 
             $this->em->persist($users);
             $this->em->flush();
 
             try{
-            $message = (new \Swift_Message('Hello in Sataku SlideShow!'))
-                ->setFrom('no-reply@sataku.com')
+            $message = (new \Swift_Message('Hello in Symfony 5 - CRUD!'))
+                ->setFrom('no-reply@pawelliwocha.pl')
                 ->setTo($request->request->get('email'))
                 ->setBody(
                     $this->renderView(
@@ -267,8 +267,8 @@ class usersController extends AbstractController
         try{
             $this->em->persist($user);
             $this->em->flush();
-            $message = (new \Swift_Message('New password Sataku SlideShow!'))
-                ->setFrom('no-reply@sataku.com')
+            $message = (new \Swift_Message('New password Symfony 5 - CRUD!'))
+                ->setFrom('no-reply@pawelliwocha.pl')
                 ->setTo($user->getEmail())
                 ->setBody(
                     $this->renderView(

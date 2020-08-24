@@ -174,18 +174,7 @@ class usersController extends AbstractController
                                     array('firstname' => $content['firstname'],
                                         'username' => $content['username'],
                                         'password' => $password
-                                    ),
-                                    'text/html'
-                                ))
-                            ->addPart(
-                                $this->renderView(
-                                    'email/registration.txt.twig',
-                                    array('firstname' => $content['firstname'],
-                                        'username' => $content['username'],
-                                        'password' => $password
-                                    ),
-                                    'text/plain'
-                                ));
+                                    )),'text/html');
                         $mailer->send($message);
                         return new JsonResponse(['Success' => true, 'data' => $errors]);
                     }catch (\Exception $e){
@@ -384,18 +373,7 @@ class usersController extends AbstractController
                                 array('firstname' => $user->getFirstName(),
                                     'username' => $user->getUsername(),
                                     'password' => $password
-                                ),
-                                'text/html'
-                            ))
-                        ->addPart(
-                            $this->renderView(
-                                'email/registration.txt.twig',
-                                array('firstname' => $user->getFirstName(),
-                                    'username' => $user->getUsername(),
-                                    'password' => $password
-                                ),
-                                'text/plain'
-                            ));
+                                )),'text/html');
                     $mailer->send($message);
                     return new JsonResponse(['Success' => true, 'data' => 'Password change']);
                 }catch (\Exception $e){

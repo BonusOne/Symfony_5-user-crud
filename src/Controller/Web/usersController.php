@@ -117,27 +117,16 @@ class usersController extends AbstractController
             $this->em->flush();
 
             try{
-            $message = (new \Swift_Message('Hello in Symfony 5 - CRUD!'))
-                ->setFrom('no-reply@pawelliwocha.pl')
-                ->setTo($request->request->get('email'))
-                ->setBody(
-                    $this->renderView(
-                        'email/registration.html.twig',
-                        array('firstname' => $request->request->get('firstname'),
-                         'username' => $request->request->get('username'),
-                         'password' => $password
-                    ),
-                    'text/html'
-                ))
-                ->addPart(
-                    $this->renderView(
-                        'email/registration.txt.twig',
-                        array('firstname' => $request->request->get('firstname'),
-                         'username' => $request->request->get('username'),
-                         'password' => $password
-                    ),
-                    'text/plain'
-                ));
+                $message = (new \Swift_Message('Hello in Symfony 5 - CRUD!'))
+                    ->setFrom('no-reply@pawelliwocha.pl')
+                    ->setTo($request->request->get('email'))
+                    ->setBody(
+                        $this->renderView(
+                            'email/registration.html.twig',
+                            array('firstname' => $request->request->get('firstname'),
+                                'username' => $request->request->get('username'),
+                                'password' => $password
+                            )),'text/html');
                 $mailer->send($message);
                 return $this->redirectToRoute('app_users_index');
             }catch (\Exception $e){
@@ -276,18 +265,7 @@ class usersController extends AbstractController
                         array('firstname' => $user->getFirstName(),
                             'username' => $user->getUsername(),
                             'password' => $password
-                        ),
-                        'text/html'
-                    ))
-                ->addPart(
-                    $this->renderView(
-                        'email/registration.txt.twig',
-                        array('firstname' => $user->getFirstName(),
-                            'username' => $user->getUsername(),
-                            'password' => $password
-                        ),
-                        'text/plain'
-                    ));
+                        )),'text/html');
             $mailer->send($message);
             return $this->redirectToRoute('app_users_index');
         }catch (\Exception $e){
